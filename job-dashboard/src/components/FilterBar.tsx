@@ -1,13 +1,13 @@
 import type { Job } from "../lib/api";
 
-type Status = Job["status"] | "all";
+type StatusFilter = Job["status"] | "all";
 
 interface FilterBarProps {
-  value: Status;
-  onChange: (status: Status) => void;
+  value: StatusFilter;
+  onChange: (status: StatusFilter) => void;
 }
 
-const options: { value: Status; label: string }[] = [
+const options: { value: StatusFilter; label: string }[] = [
   { value: "all",        label: "All" },
   { value: "pending",    label: "Pending" },
   { value: "processing", label: "Processing" },
@@ -17,7 +17,7 @@ const options: { value: Status; label: string }[] = [
 
 export default function FilterBar({ value, onChange }: FilterBarProps) {
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="flex flex-wrap gap-2">
       {options.map((opt) => (
         <button
           key={opt.value}

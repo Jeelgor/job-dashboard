@@ -4,10 +4,10 @@ import FilterBar from "../components/FilterBar";
 import JobTable from "../components/JobTable";
 import type { Job } from "../lib/api";
 
-type Status = Job["status"] | "all";
+type StatusFilter = Job["status"] | "all";
 
 export default function Page() {
-  const [filter, setFilter] = useState<Status>("all");
+  const [filter, setFilter] = useState<StatusFilter>("all");
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-10">
@@ -15,7 +15,9 @@ export default function Page() {
         {/* Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Job Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">Monitor and manage background jobs</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Monitor and manage background jobs · stats refresh every 5s
+          </p>
         </div>
 
         {/* Stats */}

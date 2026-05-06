@@ -1,73 +1,90 @@
-# React + TypeScript + Vite
+# Job Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean, minimal dashboard to monitor and manage background jobs in real time. Built with React, TypeScript, and Tailwind CSS.
 
-Currently, two official plugins are available:
+![Job Dashboard](https://img.shields.io/badge/React-19-blue?logo=react) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript) ![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What it does
 
-## React Compiler
+- Shows live stats (pending, processing, completed, failed jobs) — auto-refreshes every 5 seconds
+- Lists all jobs in a table with status badges and timestamps
+- Filter jobs by status with one click
+- Retry any failed job directly from the UI
+- Talks to a REST API backend running on `localhost:3000`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- **React 19** with TypeScript
+- **Tailwind CSS v4** for styling
+- **Vite** for dev server and bundling
+- Vite proxy to handle CORS in development
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Project Structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── app/
+│   └── page.tsx          # Main page — puts everything together
+├── components/
+│   ├── StatsCards.tsx    # The 4 stat cards at the top (auto-polls every 5s)
+│   ├── FilterBar.tsx     # Filter pills to switch between job statuses
+│   └── JobTable.tsx      # Job list with badges, timestamps, and retry button
+└── lib/
+    └── api.ts            # All API calls in one place
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+**1. Clone the repo**
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+git clone https://github.com/your-username/job-dashboard.git
+cd job-dashboard
 ```
+
+**2. Install dependencies**
+
+```bash
+npm install
+```
+
+**3. Make sure your backend is running on `http://localhost:3000`**
+
+The frontend expects these endpoints:
+
+| Method | Endpoint | What it does |
+|--------|----------|--------------|
+| GET | `/api/jobs` | List jobs (supports `?status=`, `?type=`, `?limit=`, `?offset=`) |
+| GET | `/api/jobs/stats` | Get counts by status |
+| POST | `/api/jobs/:id/retry` | Retry a failed job |
+| GET | `/health` | Health check |
+
+**4. Start the dev server**
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) and you're good to go.
+
+## Environment Variables
+
+If your backend runs on a different URL, create a `.env` file:
+
+```env
+VITE_API_URL=http://your-backend-url.com
+```
+
+By default it proxies through Vite to `localhost:3000`, so you don't need this for local development.
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+Output goes to the `dist/` folder. Deploy it anywhere — Vercel, Netlify, or any static host.
+
+## Why I built this
+
+I wanted a practical project that covers real frontend patterns — polling for live data, handling loading/error states, filtering, and wiring up a REST API cleanly. No unnecessary libraries, just the core stack.
