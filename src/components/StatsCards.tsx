@@ -17,7 +17,11 @@ const cards: {
   { key: "failed",     label: "Failed",     bg: "bg-red-50",    border: "border-red-200",    text: "text-red-800",    dot: "bg-red-400"    },
 ];
 
-export default function StatsCards() {
+interface StatsCardsProps {
+  refreshTrigger?: number;
+}
+
+export default function StatsCards({ refreshTrigger }: StatsCardsProps) {
   const [stats, setStats] = useState<JobStats | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +38,7 @@ export default function StatsCards() {
     load();
     const id = setInterval(load, POLL_INTERVAL);
     return () => clearInterval(id);
-  }, []);
+  }, [refreshTrigger]);
 
   if (error) {
     return (
@@ -49,13 +53,13 @@ export default function StatsCards() {
       {cards.map(({ key, label, bg, border, text, dot }) => (
         <div key={key} className={`rounded-xl border ${bg} ${border} p-5`}>
           <div className="flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${dot}`} />
-            <p className={`text-xs font-semibold uppercase tracking-wide ${text} opacity-70`}>
+            <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+            <span className={`text-xs font-semibold uppercase tracking-wider ${text}`}>
               {label}
-            </p>
+            </span>
           </div>
           <p className={`mt-2 text-3xl font-bold ${text}`}>
-            {stats ? stats[key].toLocaleString() : "—"}
+            {stats !== null ? stats[key] : "—"}
           </p>
         </div>
       ))}

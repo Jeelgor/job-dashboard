@@ -5,6 +5,7 @@ type StatusFilter = Job["status"] | "all";
 
 interface JobTableProps {
   filter: StatusFilter;
+  refreshTrigger?: number;
 }
 
 const POLL_INTERVAL = 4000; // poll when processing jobs are visible
@@ -25,7 +26,7 @@ function formatDate(iso: string) {
   });
 }
 
-export default function JobTable({ filter }: JobTableProps) {
+export default function JobTable({ filter, refreshTrigger }: JobTableProps) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +48,7 @@ export default function JobTable({ filter }: JobTableProps) {
   useEffect(() => {
     setLoading(true);
     load();
-  }, [load]);
+  }, [load, refreshTrigger]);
 
   // Poll when showing processing or all jobs
   useEffect(() => {
@@ -98,7 +99,7 @@ export default function JobTable({ filter }: JobTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
+    <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-xs">
       <table className="min-w-full text-sm">
         <thead className="border-b border-gray-100 bg-gray-50">
           <tr>
