@@ -62,6 +62,16 @@ export async function createJob(type: string, payload: Record<string, unknown>):
   return res.json();
 }
 
+export async function createBulkJobs(count: number = 50, type: string = "heavy-task"): Promise<{ count: number; message: string }> {
+  const res = await fetch(`${BASE_URL}/api/jobs/bulk`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ count, type }),
+  });
+  if (!res.ok) throw new Error("Failed to dispatch bulk jobs");
+  return res.json();
+}
+
 export async function retryJob(id: string): Promise<Job> {
   const res = await fetch(`${BASE_URL}/api/jobs/${id}/retry`, { method: "POST" });
   if (res.status === 404) throw new Error("Job not found");
